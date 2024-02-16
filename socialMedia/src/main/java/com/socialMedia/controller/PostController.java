@@ -1,8 +1,8 @@
 package com.socialMedia.controller;
 
 import com.socialMedia.dto.PostRequestDTO;
-import com.socialMedia.dto.PostResponseDTO;
 import com.socialMedia.exception.MandatoryFieldsMissingException;
+import com.socialMedia.exception.NoPostFoundException;
 import com.socialMedia.exception.NoUsersFoundException;
 import com.socialMedia.exception.NotValidIdException;
 import com.socialMedia.service.PostService;
@@ -26,7 +26,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable final Long postId) throws NotValidIdException, NoUsersFoundException {
+    public ResponseEntity<?> deletePost(@PathVariable final Long postId) throws NotValidIdException, NoUsersFoundException, NoPostFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(postService.deletePost(postId));
     }
 
@@ -36,7 +36,7 @@ public class PostController {
     }
 
     @PatchMapping("/{postId}")
-    public ResponseEntity<?> addLike(@PathVariable("postId") final Long postId) throws NoUsersFoundException, NotValidIdException {
+    public ResponseEntity<?> addLike(@PathVariable("postId") final Long postId) throws NotValidIdException, NoPostFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(postService.addLikeToPost(postId));
     }
 }

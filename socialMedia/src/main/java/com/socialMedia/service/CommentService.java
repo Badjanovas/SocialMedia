@@ -3,6 +3,7 @@ package com.socialMedia.service;
 import com.socialMedia.dto.CommentRequestDTO;
 import com.socialMedia.dto.CommentResponseDTO;
 import com.socialMedia.exception.MandatoryFieldsMissingException;
+import com.socialMedia.exception.NoPostFoundException;
 import com.socialMedia.exception.NoUsersFoundException;
 import com.socialMedia.exception.NotValidIdException;
 import com.socialMedia.model.Comment;
@@ -34,7 +35,7 @@ public class CommentService {
     private final CommentMappingService commentMappingService;
 
     @CacheEvict(value = {"postCache", "userCache"}, allEntries = true)
-    public List<CommentResponseDTO> addComment(final CommentRequestDTO commentRequestDTO) throws NotValidIdException, NoUsersFoundException, MandatoryFieldsMissingException {
+    public List<CommentResponseDTO> addComment(final CommentRequestDTO commentRequestDTO) throws NotValidIdException, MandatoryFieldsMissingException, NoPostFoundException, NoUsersFoundException {
         globalExceptionValidator.validateId(commentRequestDTO.getUserId());
         globalExceptionValidator.validateId(commentRequestDTO.getPostId());
         userRequestValidator.validateUserById(commentRequestDTO.getUserId());
@@ -48,13 +49,13 @@ public class CommentService {
     }
 
     @CacheEvict(value = {"postCache", "userCache"}, allEntries = true)
-    public List<CommentResponseDTO> likeComment (final Long commentId) throws NotValidIdException, NoUsersFoundException {
+    public List<CommentResponseDTO> likeComment(final Long commentId) throws NotValidIdException, NoUsersFoundException {
         globalExceptionValidator.validateId(commentId);
         commentRequestValidator.validateCommentById(commentId);
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow();
 
-        comment.setLikeCount(comment.getLikeCount()+1);
+        comment.setLikeCount(comment.getLikeCount() + 1);
         User user = comment.getUser();
 
         commentRepository.save(comment);

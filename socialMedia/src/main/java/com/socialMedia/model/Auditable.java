@@ -6,5 +6,4 @@ public interface Auditable {
 
 
     LocalDateTime getCreatedAt();
-    void setCreatedAt(LocalDateTime createdAt);
 }

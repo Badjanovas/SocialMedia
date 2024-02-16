@@ -3,6 +3,7 @@ package com.socialMedia.service;
 import com.socialMedia.dto.PostRequestDTO;
 import com.socialMedia.dto.PostResponseDTO;
 import com.socialMedia.exception.MandatoryFieldsMissingException;
+import com.socialMedia.exception.NoPostFoundException;
 import com.socialMedia.exception.NoUsersFoundException;
 import com.socialMedia.exception.NotValidIdException;
 import com.socialMedia.model.Post;
@@ -64,7 +65,7 @@ public class PostService {
     }
 
     @CacheEvict(value = {"postCache", "userCache"}, allEntries = true)
-    public List<PostResponseDTO> deletePost(final Long id) throws NotValidIdException, NoUsersFoundException {
+    public List<PostResponseDTO> deletePost(final Long id) throws NotValidIdException, NoPostFoundException {
         globalExceptionValidator.validateId(id);
         postRequestValidator.validatePostById(id);
         postRepository.deleteById(id);
@@ -99,7 +100,7 @@ public class PostService {
     }
 
     @CacheEvict(value = {"postCache", "userCache"}, allEntries = true)
-    public List<PostResponseDTO> addLikeToPost(Long postId) throws NoUsersFoundException, NotValidIdException {
+    public List<PostResponseDTO> addLikeToPost(Long postId) throws NotValidIdException, NoPostFoundException {
         globalExceptionValidator.validateId(postId);
         postRequestValidator.validatePostById(postId);
         Post post = postRepository.findById(postId)

@@ -1,7 +1,7 @@
 package com.socialMedia.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
@@ -13,13 +13,13 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class ExternalApiController {
 
 
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private CacheManager cacheManager;
+
+    private final RestTemplate restTemplate;
+    private final CacheManager cacheManager;
 
     private final String ALL_USERS = "http://localhost:2222/api/user/";
     private final String FORUM_BY_USER_ID = "http://localhost:2222/api/user/{userId}";
@@ -32,8 +32,8 @@ public class ExternalApiController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getForumsByUserId(@PathVariable("userId") final Long userId) {
-        String cacheKey = "allUserForumPosts" + userId;
-        Cache usersCache = cacheManager.getCache("externalApiCache");
+        final String cacheKey = "allUserForumPosts" + userId;
+        final Cache usersCache = cacheManager.getCache("externalApiCache");
         Cache.ValueWrapper cachedResponse = usersCache.get(cacheKey);
 
         if (cachedResponse != null) {

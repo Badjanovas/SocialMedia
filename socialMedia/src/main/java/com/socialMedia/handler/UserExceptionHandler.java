@@ -3,7 +3,6 @@ package com.socialMedia.handler;
 import com.socialMedia.exception.MandatoryFieldsMissingException;
 import com.socialMedia.exception.NoUsersFoundException;
 import com.socialMedia.exception.NotValidAgeException;
-import com.socialMedia.exception.NotValidIdException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

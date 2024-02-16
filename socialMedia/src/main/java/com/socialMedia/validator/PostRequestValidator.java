@@ -2,6 +2,7 @@ package com.socialMedia.validator;
 
 import com.socialMedia.dto.PostRequestDTO;
 import com.socialMedia.exception.MandatoryFieldsMissingException;
+import com.socialMedia.exception.NoPostFoundException;
 import com.socialMedia.exception.NoUsersFoundException;
 import com.socialMedia.exception.NotValidIdException;
 import com.socialMedia.repository.PostRepository;
@@ -29,10 +30,10 @@ public class PostRequestValidator {
         }
     }
 
-    public void validatePostById(final Long id) throws NoUsersFoundException {
+    public void validatePostById(final Long id) throws NoPostFoundException {
         if (!postRepository.existsById(id)) {
             log.error("Post with id number " + id + " not found!");
-            throw new NoUsersFoundException("Post with id number " + id + " not found!");
+            throw new NoPostFoundException("Post with id number " + id + " not found!");
         }
     }
 

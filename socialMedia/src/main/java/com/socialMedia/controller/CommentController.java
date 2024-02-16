@@ -2,6 +2,7 @@ package com.socialMedia.controller;
 
 import com.socialMedia.dto.CommentRequestDTO;
 import com.socialMedia.exception.MandatoryFieldsMissingException;
+import com.socialMedia.exception.NoPostFoundException;
 import com.socialMedia.exception.NoUsersFoundException;
 import com.socialMedia.exception.NotValidIdException;
 import com.socialMedia.service.CommentService;
@@ -20,8 +21,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/")
-    public ResponseEntity<?> addComment(@RequestBody final CommentRequestDTO commentRequestDTO)
-            throws NotValidIdException, MandatoryFieldsMissingException, NoUsersFoundException {
+    public ResponseEntity<?> addComment(@RequestBody final CommentRequestDTO commentRequestDTO) throws NotValidIdException, MandatoryFieldsMissingException, NoUsersFoundException, NoPostFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.addComment(commentRequestDTO));
     }
 

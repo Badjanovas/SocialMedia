@@ -39,8 +39,4 @@ public class Comment implements Auditable{
         return this.createdAt;
     }
 
-    @Override
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }
