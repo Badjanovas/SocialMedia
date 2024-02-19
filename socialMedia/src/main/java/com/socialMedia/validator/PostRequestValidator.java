@@ -5,10 +5,13 @@ import com.socialMedia.exception.MandatoryFieldsMissingException;
 import com.socialMedia.exception.NoPostFoundException;
 import com.socialMedia.exception.NoUsersFoundException;
 import com.socialMedia.exception.NotValidIdException;
+import com.socialMedia.model.Post;
 import com.socialMedia.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -34,6 +37,13 @@ public class PostRequestValidator {
         if (!postRepository.existsById(id)) {
             log.error("Post with id number " + id + " not found!");
             throw new NoPostFoundException("Post with id number " + id + " not found!");
+        }
+    }
+
+    public void validatePostList(final List<Post> allPosts) throws NoPostFoundException {
+        if (allPosts.isEmpty()){
+            log.error("No posts were found in the DB!");
+            throw new NoPostFoundException("No posts were found!");
         }
     }
 

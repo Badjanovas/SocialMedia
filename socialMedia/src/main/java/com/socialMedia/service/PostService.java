@@ -20,6 +20,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -77,13 +78,12 @@ public class PostService {
 
         globalExceptionValidator.validateId(id);
 
-        Cache cache = cacheManager.getCache("postCache");
         final String cacheKey = "postsOfUser" + id;
         final List<Post> posts;
 
-        if (cache != null){
-            posts = cache.get(cacheKey, List.class);
-            if (posts != null){
+        if (postCache != null) {
+            posts = postCache.get(cacheKey, List.class);
+            if (posts != null) {
                 log.info("Fetching posts from cache of user with id number: " + id);
                 return postMappingService.mapToResponse(posts);
             }
@@ -92,8 +92,8 @@ public class PostService {
         userRequestValidator.validateUserById(id);
         final var user = userRepository.findById(id);
 
-        if (cache != null){
-            cache.put(cacheKey, user.get().getPosts());
+        if (postCache != null) {
+            postCache.put(cacheKey, user.get().getPosts());
         }
         log.info(user.get().getPosts().size() + " posts were found in DB.");
         return postMappingService.mapToResponse(user.get().getPosts());
@@ -104,13 +104,22 @@ public class PostService {
         globalExceptionValidator.validateId(postId);
         postRequestValidator.validatePostById(postId);
         Post post = postRepository.findById(postId)
-                        .orElseThrow();
+                .orElseThrow();
 
-        post.setLikeCount(post.getLikeCount()+1);
+        post.setLikeCount(post.getLikeCount() + 1);
         User user = post.getUser();
 
         postRepository.save(post);
         log.info("Post liked successfully!");
         return postMappingService.mapToResponse(user.getPosts());
+    }
+
+    public Post getMostLikedPost() throws NoPostFoundException {
+        final List<Post> allPosts = postRepository.findAll();
+        postRequestValidator.validatePostList(allPosts);
+        log.info("Most liked post was found successfully.");
+        return allPosts.stream()
+                .max(Comparator.comparingInt(Post::getLikeCount))
+                .orElse(null);
     }
 }

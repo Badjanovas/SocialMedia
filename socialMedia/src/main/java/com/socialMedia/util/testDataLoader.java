@@ -78,9 +78,15 @@ public class testDataLoader implements CommandLineRunner {
                 .user(user2)
                 .createdAt(LocalDateTime.now())
                 .build();
+        Post post6 = Post.builder()
+                .likeCount(15)
+                .message("Looking for book recommendation")
+                .user(user2)
+                .createdAt(LocalDateTime.now())
+                .build();
 
         user1.setPosts(Arrays.asList(post1, post4));
-        user2.setPosts(Arrays.asList(post2, post5));
+        user2.setPosts(Arrays.asList(post2, post5, post6));
         user3.setPosts(Arrays.asList(post3));
 
 
@@ -133,8 +139,8 @@ public class testDataLoader implements CommandLineRunner {
         post3.setComments(Arrays.asList(comment3, comment4));
 
         userRepository.saveAll(Arrays.asList(user1, user2, user3));
-        postRepository.saveAll(Arrays.asList(post1, post2, post3));
-        commentRepository.saveAll(Arrays.asList(comment1, comment2, comment3));
+        postRepository.saveAll(Arrays.asList(post1, post2, post3, post4, post5, post6));
+        commentRepository.saveAll(Arrays.asList(comment1, comment2, comment3, comment4, comment5));
 
         log.info("Data created successfully!");
 

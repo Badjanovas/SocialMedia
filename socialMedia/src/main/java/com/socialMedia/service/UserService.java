@@ -16,10 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -42,12 +45,11 @@ public class UserService {
         this.globalExceptionValidator = globalExceptionValidator;
     }
 
-    // we can optimise this code by using spring boot annotation @Cacheable(value = "userCache", key = "#root.method.name")
+    // we can optimise this code by using spring boot annotation @Cacheable(value = "userCache", key = "allUsers")
     // but I am not sure how to handle logging.
     public List<User> getAllUsers() throws NoUsersFoundException {
-        Cache cache = cacheManager.getCache("userCache");
         final String cacheKey = "allUsersKey";
-        List<User> users = cache != null ? cache.get(cacheKey, List.class) : null;
+        List<User> users = userCache != null ? userCache.get(cacheKey, List.class) : null;
 
         if (users != null) {
             log.info("Fetching users from cache.");
@@ -57,7 +59,7 @@ public class UserService {
         log.info("Looking for users in DB...");
         users = userRepository.findAll();
         userRequestValidator.validateUserList(users);
-        cache.put(cacheKey, users);
+        userCache.put(cacheKey, users);
         log.info(users.size() + " users were found in the DB. Caching the result.");
 
         return users;
@@ -82,6 +84,43 @@ public class UserService {
         log.info("User with id number " + id + " was deleted fromDB successfully.");
 
         return userRepository.findAll();
+    }
+
+    public List<UserResponseDTO> sortByAge() throws NoUsersFoundException {
+        final String cacheKey = "sortedUsers";
+        final List<User> users = userCache != null ? userCache.get(cacheKey, List.class) : null;
+
+        if (users != null) {
+            log.info("Fetching sorted users from cache.");
+            return userMappingService.mapToResponse(users);
+        }
+
+        final List<User> allUsers = userRepository.findAll();
+        userRequestValidator.validateUserList(allUsers);
+
+        final List<User> sortedUsers = allUsers.stream()
+                .sorted(Comparator.comparingInt(User::getAge))
+                .toList();
+
+        log.info("Fetching sorted users from database.");
+        userCache.put(cacheKey, sortedUsers);
+        return userMappingService.mapToResponse(sortedUsers);
+    }
+
+    public List<UserResponseDTO> getUserWithMostPosts() throws NoUsersFoundException {
+        final List<User> users = userRepository.findAll();
+        userRequestValidator.validateUserList(users);
+
+        final int maxPosts = users.stream()
+                .mapToInt(user -> user.getPosts().size())
+                .max()
+                .orElse(0);
+
+        List<User> usersWithMostPosts = users.stream()
+                .filter(user -> user.getPosts().size() == maxPosts)
+                .collect(Collectors.toList());
+
+        return userMappingService.mapToResponse(usersWithMostPosts);
     }
 
 }

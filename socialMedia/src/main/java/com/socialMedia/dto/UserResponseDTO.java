@@ -15,5 +15,6 @@ public class UserResponseDTO {
     private String userName;
     private Integer userAge;
     private Boolean isAdult;
+    private Integer postCount;
 
 }

@@ -39,4 +39,9 @@ public class PostController {
     public ResponseEntity<?> addLike(@PathVariable("postId") final Long postId) throws NotValidIdException, NoPostFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(postService.addLikeToPost(postId));
     }
+
+    @GetMapping("/mostLikedPost")
+    public ResponseEntity<?> mostLikedPost() throws NoPostFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getMostLikedPost());
+    }
 }

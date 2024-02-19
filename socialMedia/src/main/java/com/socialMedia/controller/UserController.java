@@ -36,4 +36,12 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable final Long userId) throws NoUsersFoundException, NotValidIdException {
             return ResponseEntity.status(HttpStatus.OK).body(userService.deleteUser(userId));
     }
+    @GetMapping("/sorted/users")
+    public ResponseEntity<?> sortedUsersByAge() throws NoUsersFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.sortByAge());
+    }
+    @GetMapping("/usersWithMostPosts")
+    public ResponseEntity<?> usersWithMostPosts() throws NoUsersFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserWithMostPosts());
+    }
 }

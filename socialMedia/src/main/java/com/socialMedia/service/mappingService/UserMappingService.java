@@ -26,6 +26,7 @@ public class UserMappingService {
             dto.setUserName(user.getName());
             dto.setUserAge(user.getAge());
             dto.setIsAdult(user.getAge()>=18);
+            dto.setPostCount(user.getPosts().size());
             mappedUsers.add(dto);
         }
         return mappedUsers;
