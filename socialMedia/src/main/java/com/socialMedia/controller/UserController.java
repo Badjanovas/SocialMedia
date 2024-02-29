@@ -44,4 +44,8 @@ public class UserController {
     public ResponseEntity<?> usersWithMostPosts() throws NoUsersFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserWithMostPosts());
     }
+    @GetMapping("/adultUsers")
+    public ResponseEntity<?> adultUsers() throws NoUsersFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAdultUsers());
+    }
 }

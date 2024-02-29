@@ -73,7 +73,7 @@ public class CommentService {
         User user = comment.getUser();
 
         commentRepository.delete(comment);
-
+        log.info("Comment with id: " + commentId + " deleted successfully!");
         return commentMappingService.mapToResponse(user.getComments());
     }
 }

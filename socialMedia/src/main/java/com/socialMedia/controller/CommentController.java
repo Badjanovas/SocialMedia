@@ -25,7 +25,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.addComment(commentRequestDTO));
     }
 
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/addLike/{commentId}")
     public ResponseEntity<?> addLike(@PathVariable("commentId") final Long commentId) throws NotValidIdException, NoUsersFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.likeComment(commentId));
     }

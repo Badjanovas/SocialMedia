@@ -27,6 +27,7 @@ public class UserExceptionHandler {
     public ResponseEntity<Object> handleNoUsersFoundException(NoUsersFoundException e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception e){
         log.error("An unexpected error has occurred!");

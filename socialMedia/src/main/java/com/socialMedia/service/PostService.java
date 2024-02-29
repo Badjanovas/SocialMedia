@@ -95,7 +95,7 @@ public class PostService {
         if (postCache != null) {
             postCache.put(cacheKey, user.get().getPosts());
         }
-        log.info(user.get().getPosts().size() + " posts were found in DB.");
+        log.info("Fetching posts from DB of user with id number: " + id);
         return postMappingService.mapToResponse(user.get().getPosts());
     }
 

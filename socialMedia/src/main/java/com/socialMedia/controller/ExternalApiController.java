@@ -29,6 +29,7 @@ public class ExternalApiController {
 
     @GetMapping("/")
     public ResponseEntity<?> getAllUsers() throws NoUsersFoundException {
+        log.info("Collecting data.");
         return ResponseEntity.status(HttpStatus.OK).body(externalApiService.getAllUsersFromExternalApi());
     }
 

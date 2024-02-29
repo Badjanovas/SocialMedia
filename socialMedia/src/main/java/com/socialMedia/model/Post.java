@@ -23,7 +23,7 @@ public class Post implements Auditable{
     @Column(nullable = false, length = 100)
     private String message;
     private Integer likeCount;
-    LocalDateTime createdAt = null;
+    LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

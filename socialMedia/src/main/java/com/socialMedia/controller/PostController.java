@@ -35,7 +35,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getAllPostByUserId(userId));
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping("/addLike/{postId}")
     public ResponseEntity<?> addLike(@PathVariable("postId") final Long postId) throws NotValidIdException, NoPostFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(postService.addLikeToPost(postId));
     }

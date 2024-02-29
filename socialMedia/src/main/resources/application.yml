@@ -4,7 +4,7 @@ spring:
     url: jdbc:postgresql://localhost:5433/SocialMedia
     driverClassName: org.postgresql.Driver
     username: postgres
-    password: bambeklis258
+    password:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:

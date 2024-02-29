@@ -18,8 +18,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +46,7 @@ public class UserService {
     // we can optimise this code by using spring boot annotation @Cacheable(value = "userCache", key = "allUsers")
     // but I am not sure how to handle logging.
     public List<User> getAllUsers() throws NoUsersFoundException {
-        final String cacheKey = "allUsersKey";
+        final String cacheKey = "allUsers";
         List<User> users = userCache != null ? userCache.get(cacheKey, List.class) : null;
 
         if (users != null) {
@@ -108,6 +106,14 @@ public class UserService {
     }
 
     public List<UserResponseDTO> getUserWithMostPosts() throws NoUsersFoundException {
+        final String cacheKey = "userWithMostPosts";
+        final var userWithMostPosts = userCache != null ? userCache.get(cacheKey, List.class) : null;
+
+        if (userWithMostPosts != null) {
+            log.info("Fetching user with most amount of posts from cache.");
+            return userMappingService.mapToResponse((List<User>) userWithMostPosts);
+        }
+
         final List<User> users = userRepository.findAll();
         userRequestValidator.validateUserList(users);
 
@@ -116,11 +122,21 @@ public class UserService {
                 .max()
                 .orElse(0);
 
-        List<User> usersWithMostPosts = users.stream()
+        final List<User> usersWithMostPosts = users.stream()
                 .filter(user -> user.getPosts().size() == maxPosts)
                 .collect(Collectors.toList());
 
+        log.info("Fetching user with most amount of posts from DB.");
+        userCache.put(cacheKey, usersWithMostPosts);
         return userMappingService.mapToResponse(usersWithMostPosts);
+    }
+
+    public List<UserResponseDTO> getAdultUsers() throws NoUsersFoundException {
+        List<User> adultUsers = userRepository.findUsersOlderThan18();
+        userRequestValidator.validateUserList(adultUsers);
+        log.info(adultUsers.size() + " adult users found.");
+
+        return userMappingService.mapToResponse(adultUsers);
     }
 
 }

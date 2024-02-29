@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,24 +29,26 @@ public class ExternalApiService {
     private final GlobalExceptionValidator globalExceptionValidator;
     private final CacheManager cacheManager;
 
+    @Cacheable("externalApiCache")
     public List<ExternalApiUserDTO> getAllUsersFromExternalApi() throws NoUsersFoundException {
-        final String cacheKey = "allUsers";
+        /*final String cacheKey = "allUsers";
         final Cache usersCache = cacheManager.getCache("externalApiCache");
         Cache.ValueWrapper cachedResponse = usersCache.get(cacheKey);
 
         if (cachedResponse != null) {
             log.info("Response from cache.");
             return (List<ExternalApiUserDTO>) cachedResponse.get();
-        }
+        }*/
 
         final String url = "http://localhost:2222/api/user/";
         ResponseEntity<ExternalApiUserDTO[]> response = restTemplate.getForEntity(url, ExternalApiUserDTO[].class);
         ExternalApiUserDTO[] users = response.getBody();
         externalApiValidator.validateApiUserList(List.of(users));
         log.info("Response from DB.");
-        usersCache.put(cacheKey, List.of(users));
+        //usersCache.put(cacheKey, List.of(users));
         return List.of(users);
     }
+
 
     public List<ExternalApiForumMessageDto> getAllForumMessagesByUserId(final Long id, final List<ExternalApiUserDTO> usersFromApi) throws NotValidIdException, NoUsersFoundException {
         globalExceptionValidator.validateId(id);
